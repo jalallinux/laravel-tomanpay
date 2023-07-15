@@ -2,7 +2,7 @@
 
 namespace JalalLinuX\Tomanpay\Tests;
 
-class CheckUpdatesTest extends TestCase
+class ExampleTest extends TestCase
 {
     public function testCheckUpdatesSuccess()
     {
