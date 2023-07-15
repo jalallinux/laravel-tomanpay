@@ -29,12 +29,12 @@
     },
     "autoload": {
         "psr-4": {
-            "JalalLinuX\\Toman\\": "src"
+            "JalalLinuX\\Tomanpay\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "JalalLinuX\\Toman\\Tests\\": "tests"
+            "JalalLinuX\\Tomanpay\\Tests\\": "tests"
         }
     },
     "scripts": {

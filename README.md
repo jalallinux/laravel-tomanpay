@@ -16,7 +16,7 @@ composer require jalallinux/laravel-tomanpay
 ## Usage
 
 ```php
-$skeleton = new JalalLinuX\Toman();
+$skeleton = new JalalLinuX\Tomanpay();
 echo $skeleton->echoPhrase('Hello, JalalLinuX!');
 ```
 
