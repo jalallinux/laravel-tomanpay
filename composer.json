@@ -1,47 +1,50 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "jalallinux/laravel-tomanpay",
+    "description": "Laravel Tomanpay integeration SDK",
     "keywords": [
-        ":vendor_name",
-        ":package_slug"
+        "HiDevs",
+        "JalalLinuX",
+        "thingsboard",
+        "laravel",
+        "laravel-tomanpay"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/jalallinux/laravel-tomanpay",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "JalalLinuX",
+            "email": "smjjalalzadeh93@gmail.com",
             "role": "Developer"
         }
     ],
     "require": {
         "php": "^8.0|^8.1|^8.2",
-        "laravel/framework": "^7.0|^8.0|^9.0"
+        "illuminate/http": "^9.0|^10.0",
+        "illuminate/support": "^9.0|^10.0",
+        "illuminate/contracts": "^9.0|^10.0"
     },
     "require-dev": {
-        "pestphp/pest": "^1.20",
-        "spatie/ray": "^1.28"
+        "laravel/pint": "*",
+        "orchestra/testbench": "^7.0|^8.0",
+        "phpunit/phpunit": "^9.4"
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src"
+            "JalalLinuX\\Toman\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests"
+            "JalalLinuX\\Toman\\Tests\\": "tests"
         }
     },
     "scripts": {
-        "test": "vendor/bin/pest",
-        "test-coverage": "vendor/bin/pest --coverage"
+        "test": "vendor/bin/phpunit",
+        "format": "php-cs-fixer fix --allow-risky=yes",
+        "pint": "vendor/bin/pint --config pint.json"
     },
     "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "phpstan/extension-installer": true,
-            "pestphp/pest-plugin": true
-        }
+        "sort-packages": true
     },
     "minimum-stability": "dev",
     "prefer-stable": true
