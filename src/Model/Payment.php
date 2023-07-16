@@ -81,7 +81,7 @@ class Payment extends BaseModel
     /**
      * Used for get all Payments record with pagination.
      *
-     * @param int $page
+     * @param  int  $page
      * @return LengthAwarePaginator
      *
      * @scope payment.list
@@ -91,7 +91,7 @@ class Payment extends BaseModel
     public static function list(int $page = 1): LengthAwarePaginator
     {
         $response = self::api()->get('payments', [
-            'page' => $page
+            'page' => $page,
         ])->json();
 
         return new LengthAwarePaginator(
