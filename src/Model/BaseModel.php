@@ -8,15 +8,15 @@ use JalalLinuX\Tomanpay\Exceptions\TomanpayExceptionHandler;
 
 abstract class BaseModel
 {
-    protected function api(bool $withThrow = true): PendingRequest
+    protected static function api(bool $withThrow = true): PendingRequest
     {
-        $request = Http::baseUrl($this->config('base_url'))
-            ->withToken($this->config('token'));
+        $request = Http::baseUrl(self::config('base_url'))
+            ->withToken(self::config('token'));
 
         return $withThrow ? $request->throw(fn ($response, $e) => TomanpayExceptionHandler::make($response, $e)->handle()) : $request;
     }
 
-    protected function config(string $key = null)
+    protected static function config(string $key = null)
     {
         $config = collect(config('tomanpay.modes'))->firstWhere('mode', config('tomanpay.default'));
         throw_if(! isset($config), new \Exception('Payment mode '.config('tomanpay.default').' not defined in config file.'));

@@ -48,21 +48,55 @@ class Payment extends BaseModel
     private ?string $digital_receipt_number = null;
 
     /**
+     * Creates a new Payment and gets a token for it from the automatically chosen PSP
+     *
+     * @param  int  $amount The amount to be paid, in Rials. Note that this is the amount that the user will be paying in the payment gateway.
+     * @param  string  $callbackUrl This is an absolute URL to your callback endpoint which will be called after user has finished the payment process. Note that the domain of your callback_url must be registered and validated in Toman.
+     * @param  string|null  $mobile_number The mobile number to be delivered to the PSP. When this field is provided, the PSP will suggest the card numbers that the user used before to them. It is also used in the process of National ID check.
+     * @param  bool  $check_national_id Performs a check on the National ID of the owner of the card against the National ID of the owner of the mobile number and aborts the payment if they don't match. The mobile_number should not be null if this value is true
+     * @param  string|null  $tracker_id This is an ID you can provide for the payment, which will be returned to your callback_url for you to verify the payment. Note that due to security reasons, It is highly advised to generate and save a tracker_id for each payment in your database.
+     * @param  array|null  $card_numbers The list of the card numbers to be used in the payment process. If you want to limit the card numbers by which the users pays, you can fill this field.
+     * @return self
+     *
+     * @scope payment.create
+     *
+     * @author JalalLinuX
+     */
+    public static function create(int $amount, string $callbackUrl, string $mobile_number = null, bool $check_national_id = false, string $tracker_id = null, array $card_numbers = null): self
+    {
+        $payload = [
+            'amount' => $amount,
+            'callbackUrl' => $callbackUrl,
+            'mobile_number' => $mobile_number,
+            'check_national_id' => $check_national_id,
+            'tracker_id' => $tracker_id,
+            'card_numbers' => $card_numbers,
+        ];
+
+        $response = self::api()->post('payments', $payload)->json();
+
+        return self::fromArray($response);
+    }
+
+    /**
      * Used for get all Payments record with pagination.
      *
+     * @param int $page
      * @return LengthAwarePaginator
      *
      * @scope payment.list
      *
      * @author JalalLinuX
      */
-    public function list(): LengthAwarePaginator
+    public static function list(int $page = 1): LengthAwarePaginator
     {
-        $response = $this->api()->get('payments')->json();
+        $response = self::api()->get('payments', [
+            'page' => $page
+        ])->json();
 
         return new LengthAwarePaginator(
             array_map(fn ($data) => self::fromArray($data), $response['results']),
-            $response['count'], count($response['results']), intval(last(explode('=', $response['previous']))) + 1
+            $response['count'], count($response['results']), $page
         );
     }
 
@@ -76,9 +110,9 @@ class Payment extends BaseModel
      *
      * @author JalalLinuX
      */
-    public function detail(string $uuid): Payment
+    public static function detail(string $uuid): Payment
     {
-        $response = $this->api()->get("payments/{$uuid}")->json();
+        $response = self::api()->get("payments/{$uuid}")->json();
 
         return self::fromArray($response);
     }
@@ -97,9 +131,9 @@ class Payment extends BaseModel
      *
      * @author JalalLinuX
      */
-    public function verify(string $uuid, bool $throw = true): bool
+    public static function verify(string $uuid, bool $throw = true): bool
     {
-        $response = $this->api($throw)->post("payments/{$uuid}/verify");
+        $response = self::api($throw)->post("payments/{$uuid}/verify");
 
         return $response->successful();
     }
