@@ -7,16 +7,16 @@ use Illuminate\Support\Facades\Http;
 
 abstract class BaseModel
 {
-    protected array $config;
-
-    public function __construct()
-    {
-        $this->config = collect(config('tomanpay.modes'))->firstWhere('mode', config('tomanpay.default'));
-    }
-
     protected function client(): PendingRequest
     {
-        throw_if(!isset($this->config), new \Exception("Payment mode " . config('tomanpay.default') . " not defined in config file."));
-        return Http::baseUrl($this->config['base_url'])->withToken($this->config['token']);
+        return Http::baseUrl($this->config('base_url'))->withToken($this->config('token'));
+    }
+
+    protected function config(string $key = null)
+    {
+        $config = collect(config('tomanpay.modes'))->firstWhere('mode', config('tomanpay.default'));
+        throw_if(!isset($config), new \Exception("Payment mode " . config('tomanpay.default') . " not defined in config file."));
+
+        return is_null($key) ? $config : data_get($config, $key);
     }
 }

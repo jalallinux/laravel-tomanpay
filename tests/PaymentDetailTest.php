@@ -5,9 +5,9 @@ namespace JalalLinuX\Tomanpay\Tests;
 use JalalLinuX\Tomanpay\Model\Payment;
 use JalalLinuX\Tomanpay\Tomanpay;
 
-class ExampleTest extends TestCase
+class PaymentDetailTest extends TestCase
 {
-    public function testCheckUpdatesSuccess()
+    public function testCorrectUuid()
     {
         $uuid = '7cadba50-6059-424e-9580-c12448a8046e';
         $payment = (new Tomanpay)->payment()->detail($uuid);

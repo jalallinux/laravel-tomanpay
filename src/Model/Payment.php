@@ -2,6 +2,7 @@
 
 namespace JalalLinuX\Tomanpay\Model;
 
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use JalalLinuX\Tomanpay\Enum\PaymentStatusEnum;
@@ -46,6 +47,33 @@ class Payment extends BaseModel
 
     private ?string $digital_receipt_number = null;
 
+    /**
+     * Used for get all Payments record with pagination.
+     *
+     * @return LengthAwarePaginator
+     *
+     * @scope payment.list
+     * @author JalalLinuX
+     */
+    public function list(): LengthAwarePaginator
+    {
+        $response = $this->client()->get("payments")->json();
+
+        return new LengthAwarePaginator(
+            array_map(fn($data) => self::fromArray($data), $response['results']),
+            $response['count'], count($response['results']), intval(last(explode('=', $response['previous']))) + 1
+        );
+    }
+
+    /**
+     * Retrieve details of a payment.
+     *
+     * @param string $uuid
+     * @return Payment
+     *
+     * @scope payment.detail
+     * @author JalalLinuX
+     */
     public function detail(string $uuid): Payment
     {
         $response = $this->client()->get("payments/{$uuid}")->json();
@@ -58,9 +86,7 @@ class Payment extends BaseModel
         $payment = new self;
         foreach ($array as $k => $v) {
             $method = 'set'.ucfirst(Str::camel($k));
-//            if (method_exists($payment, $method)) {
-                $payment->{$method}($v);
-//            }
+            $payment->{$method}($v);
         }
         return $payment;
     }
