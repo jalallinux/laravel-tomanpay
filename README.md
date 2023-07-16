@@ -39,6 +39,30 @@ You can publish config file to change default configs
 
 
 
+## Usage
+The main methods are called statically
+```php
+use \JalalLinuX\Tomanpay\Model\Payment;
+
+// Create new payment
+Payment::create(1000, 'https://site.com/callback/path'): Payment
+
+// Fetch an exists payment detail
+Payment::detail('7cadba50-6059-424e-9580-c12448a8046e'): Payment
+
+// Get list of payments
+Payment::list(): LengthAwarePaginator
+
+// Verify an exist payment
+Payment::verify('7cadba50-6059-424e-9580-c12448a8046e', false): bool
+
+// Redirect an exist payment to PSP
+Payment::redirect('7cadba50-6059-424e-9580-c12448a8046e'): RedirectResponse
+```
+
+
+
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.

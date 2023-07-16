@@ -2,8 +2,10 @@
 
 namespace JalalLinuX\Tomanpay\Model;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use JalalLinuX\Tomanpay\Enum\PaymentStatusEnum;
 
@@ -136,6 +138,30 @@ class Payment extends BaseModel
         $response = self::api($throw)->post("payments/{$uuid}/verify");
 
         return $response->successful();
+    }
+
+    /**
+     * Redirects the customer to the payment gateway.
+     * After you created the payment, you should redirect your user to the following url.
+     * Toman will notify you with payment result when the customer has finished the payment.
+     * Note the redirect is difference with send request.
+     * Redirecting to this endpoint is usually implemented via an HTTP redirect response.
+     *
+     * @param  string  $uuid The UUID of the payment
+     * @return RedirectResponse
+     *
+     * @scope payment.redirect
+     *
+     * @author JalalLinuX
+     */
+    public static function redirect(string $uuid): RedirectResponse
+    {
+        $baseUrl = self::config('base_url');
+        if (! str_ends_with($baseUrl, '/')) {
+            $baseUrl .= '/';
+        }
+
+        return Redirect::away("{$baseUrl}payments/{$uuid}/redirect");
     }
 
     public static function fromArray(array $array): self
