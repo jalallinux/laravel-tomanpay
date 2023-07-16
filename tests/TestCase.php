@@ -3,6 +3,7 @@
 namespace JalalLinuX\Tomanpay\Tests;
 
 use Illuminate\Foundation\Testing\WithFaker;
+use JalalLinuX\Tomanpay\TomanpayServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
@@ -13,7 +14,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function getPackageProviders($app): array
     {
         return [
-
+            TomanpayServiceProvider::class,
         ];
     }
 
