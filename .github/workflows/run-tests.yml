@@ -50,4 +50,4 @@ jobs:
       - name: Execute tests
         run: composer test
         env:
-          TOMANPAY_TOKEN: ${{ vars.TOMANPAY_TOKEN }}
+          TOMANPAY_TOKEN: ${{ secrets.TOMANPAY_TOKEN }}
