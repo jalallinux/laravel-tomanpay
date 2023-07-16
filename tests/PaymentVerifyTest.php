@@ -2,7 +2,7 @@
 
 namespace JalalLinuX\Tomanpay\Tests;
 
-use JalalLinuX\Tomanpay\Tomanpay;
+use JalalLinuX\Tomanpay\Model\Payment;
 
 class PaymentVerifyTest extends TestCase
 {
@@ -10,10 +10,10 @@ class PaymentVerifyTest extends TestCase
     {
         $uuid = '7cadba50-6059-424e-9580-c12448a8046e';
 
-        $verified = (new Tomanpay)->payment()->verify($uuid, false);
+        $verified = Payment::verify($uuid, false);
         $this->assertIsBool($verified);
 
         $this->expectExceptionCode(400);
-        (new Tomanpay)->payment()->verify($uuid);
+        Payment::verify($uuid);
     }
 }

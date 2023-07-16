@@ -43,8 +43,7 @@ class TomanpayServiceProvider extends ServiceProvider
 
     public function registerBindings(): void
     {
-        /** Register Helper function class */
-        $this->app->singleton(Tomanpay::class);
+        //
     }
 
     public function registerTranslations(): void
