@@ -49,5 +49,3 @@ jobs:
 
       - name: Execute tests
         run: composer test
-        env:
-          TOMANPAY_TOKEN: ${{ secrets.TOMANPAY_TOKEN }}
