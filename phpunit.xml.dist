@@ -27,7 +27,7 @@
         <env name="APP_KEY" value="base64:2fl+Ktvkfl+Fuz4Qp/A75G2RTiWVA/ZoKZvp6fiiM10="/>
         <env name="DB_CONNECTION" value="testing"/>
 
-        <env name="TOMANPAY_TOKEN" value="$TOMANPAY_TOKEN"/>
+        <env name="TOMANPAY_TOKEN" value=""/>
     </php>
     <coverage>
         <include>
