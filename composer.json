@@ -1,6 +1,6 @@
 {
     "name": "jalallinux/laravel-tomanpay",
-    "description": "Laravel Tomanpay integration SDK",
+    "description": "Laravel Tomanpay integration Client",
     "keywords": [
         "HiDevs",
         "JalalLinuX",
