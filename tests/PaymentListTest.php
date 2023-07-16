@@ -13,6 +13,6 @@ class PaymentListTest extends TestCase
         $payments = (new Tomanpay)->payment()->list();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $payments);
-        $payments->collect()->each(fn($payment) => $this->assertInstanceOf(Payment::class, $payment));
+        $payments->collect()->each(fn ($payment) => $this->assertInstanceOf(Payment::class, $payment));
     }
 }

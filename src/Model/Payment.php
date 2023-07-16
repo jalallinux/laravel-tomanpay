@@ -53,14 +53,15 @@ class Payment extends BaseModel
      * @return LengthAwarePaginator
      *
      * @scope payment.list
+     *
      * @author JalalLinuX
      */
     public function list(): LengthAwarePaginator
     {
-        $response = $this->client()->get("payments")->json();
+        $response = $this->api()->get('payments')->json();
 
         return new LengthAwarePaginator(
-            array_map(fn($data) => self::fromArray($data), $response['results']),
+            array_map(fn ($data) => self::fromArray($data), $response['results']),
             $response['count'], count($response['results']), intval(last(explode('=', $response['previous']))) + 1
         );
     }
@@ -68,17 +69,39 @@ class Payment extends BaseModel
     /**
      * Retrieve details of a payment.
      *
-     * @param string $uuid
+     * @param  string  $uuid
      * @return Payment
      *
      * @scope payment.detail
+     *
      * @author JalalLinuX
      */
     public function detail(string $uuid): Payment
     {
-        $response = $this->client()->get("payments/{$uuid}")->json();
+        $response = $this->api()->get("payments/{$uuid}")->json();
 
         return self::fromArray($response);
+    }
+
+    /**
+     * When the payment is successful Toman will inform you about the status of the payment through your callback endpoint.
+     * You must check the validity of the data (e.g. Check that the reference_number field is unique to prevent double-spending attacks) and then verify the payment.
+     * This step is required to prevent refunding the money to the user.
+     * If verification is successful, you will receive 204 status code, otherwise an HTTP 400 status code with the proper error detail will be provided to you.
+     *
+     * @param  string  $uuid The uuid field of the payment
+     * @param  bool  $throw Throw exception if not verified
+     * @return bool
+     *
+     * @scope payment.verify
+     *
+     * @author JalalLinuX
+     */
+    public function verify(string $uuid, bool $throw = true): bool
+    {
+        $response = $this->api($throw)->post("payments/{$uuid}/verify");
+
+        return $response->successful();
     }
 
     public static function fromArray(array $array): self
@@ -88,6 +111,7 @@ class Payment extends BaseModel
             $method = 'set'.ucfirst(Str::camel($k));
             $payment->{$method}($v);
         }
+
         return $payment;
     }
 
@@ -158,7 +182,7 @@ class Payment extends BaseModel
 
     public function getVerifiedAt(): ?Carbon
     {
-        return !is_null($this->verified_at) ? Carbon::parse($this->verified_at) : null;
+        return ! is_null($this->verified_at) ? Carbon::parse($this->verified_at) : null;
     }
 
     public function getTraceNumber(): ?string
@@ -188,98 +212,98 @@ class Payment extends BaseModel
 
     public function setUuid(string $uuid): self
     {
-        throw_if(!Str::isUuid($uuid), new \Exception('Payment uuid must be a valid UUID 4 format.'));
+        throw_if(! Str::isUuid($uuid), new \Exception('Payment uuid must be a valid UUID 4 format.'));
 
-        return tap($this, fn() => $this->uuid = $uuid);
+        return tap($this, fn () => $this->uuid = $uuid);
     }
 
     public function setAmount(int $amount): self
     {
-        return tap($this, fn() => $this->amount = $amount);
+        return tap($this, fn () => $this->amount = $amount);
     }
 
     public function setTomanWage(int $toman_wage): self
     {
-        return tap($this, fn() => $this->toman_wage = $toman_wage);
+        return tap($this, fn () => $this->toman_wage = $toman_wage);
     }
 
     public function setWage(int $wage): self
     {
-        return tap($this, fn() => $this->wage = $wage);
+        return tap($this, fn () => $this->wage = $wage);
     }
 
     public function setShaparakWage(int $shaparak_wage): self
     {
-        return tap($this, fn() => $this->shaparak_wage = $shaparak_wage);
+        return tap($this, fn () => $this->shaparak_wage = $shaparak_wage);
     }
 
     public function setStatus(int $status): self
     {
-        return tap($this, fn() => $this->status = $status);
+        return tap($this, fn () => $this->status = $status);
     }
 
     public function setPsp(string $psp): self
     {
-        return tap($this, fn() => $this->psp = $psp);
+        return tap($this, fn () => $this->psp = $psp);
     }
 
     public function setTerminalNumber(string $terminal_number): self
     {
-        return tap($this, fn() => $this->terminal_number = $terminal_number);
+        return tap($this, fn () => $this->terminal_number = $terminal_number);
     }
 
     public function setCreatedAt(string $created_at): self
     {
-        return tap($this, fn() => $this->created_at = $created_at);
+        return tap($this, fn () => $this->created_at = $created_at);
     }
 
     public function setCheckNationalId(bool $check_national_id): self
     {
-        return tap($this, fn() => $this->check_national_id = $check_national_id);
+        return tap($this, fn () => $this->check_national_id = $check_national_id);
     }
 
     public function setMobileNumber(?string $mobile_number): self
     {
-        return tap($this, fn() => $this->mobile_number = $mobile_number);
+        return tap($this, fn () => $this->mobile_number = $mobile_number);
     }
 
     public function setCallbackUrl(?string $callback_url): self
     {
-        return tap($this, fn() => $this->callback_url = $callback_url);
+        return tap($this, fn () => $this->callback_url = $callback_url);
     }
 
     public function setTrackerId(?string $tracker_id): self
     {
-        return tap($this, fn() => $this->tracker_id = $tracker_id);
+        return tap($this, fn () => $this->tracker_id = $tracker_id);
     }
 
     public function setVerifiedAt(?string $verified_at): self
     {
-        return tap($this, fn() => $this->verified_at = $verified_at);
+        return tap($this, fn () => $this->verified_at = $verified_at);
     }
 
     public function setTraceNumber(?string $trace_number): self
     {
-        return tap($this, fn() => $this->trace_number = $trace_number);
+        return tap($this, fn () => $this->trace_number = $trace_number);
     }
 
     public function setReferenceNumber(?string $reference_number): self
     {
-        return tap($this, fn() => $this->reference_number = $reference_number);
+        return tap($this, fn () => $this->reference_number = $reference_number);
     }
 
     public function setDigitalReceiptNumber(?string $digital_receipt_number): self
     {
-        return tap($this, fn() => $this->digital_receipt_number = $digital_receipt_number);
+        return tap($this, fn () => $this->digital_receipt_number = $digital_receipt_number);
     }
 
     public function setMaskedPaidCardNumber(?string $masked_paid_card_number): self
     {
-        return tap($this, fn() => $this->masked_paid_card_number = $masked_paid_card_number);
+        return tap($this, fn () => $this->masked_paid_card_number = $masked_paid_card_number);
     }
 
     public function setAcceptorCode(?string $acceptor_code): self
     {
-        return tap($this, fn() => $this->acceptor_code = $acceptor_code);
+        return tap($this, fn () => $this->acceptor_code = $acceptor_code);
     }
 }
