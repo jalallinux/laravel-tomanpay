@@ -1,19 +1,35 @@
-name: Tests
+name: "Tests"
 
 on: [push, pull_request]
+#on:
+#  pull_request:
+#    branches:
+#      - main
+#      - 'releases/**'
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
+
+    name: P${{ matrix.php }} L${{ matrix.laravel }} - ${{ matrix.dependency-version }}
+
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
         php: [8.2, 8.1, 8.0]
-        laravel: [7.*, 8.*, 9.*]
-        stability: [prefer-lowest, prefer-stable]
-
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
+        laravel: [10.*, 9.*]
+        dependency-version: [prefer-lowest, prefer-stable]
+        include:
+          - laravel: 10.*
+            testbench: 8.*
+          - laravel: 9.*
+            testbench: 7.*
+        exclude:
+          - laravel: 10.*
+            php: 8.0
+          - laravel: 9.*
+            dependency-version: prefer-lowest
 
     steps:
       - name: Checkout code
@@ -26,18 +42,10 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
           coverage: none
 
-      - name: Setup problem matchers
-        run: |
-          echo "::add-matcher::${{ runner.tool_cache }}/php.json"
-          echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
-
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
-          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
-
-      - name: List Installed Dependencies
-        run: composer show -D
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "symfony/console:>=4.3.4" "mockery/mockery:^1.3.2" "nesbot/carbon:>=2.62.1" --no-interaction --no-update
+          composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
 
       - name: Execute tests
-        run: vendor/bin/pest
+        run: composer test
